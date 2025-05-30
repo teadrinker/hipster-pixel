@@ -12,7 +12,7 @@ I seemed to be using this project several times each year even though the
 original prototype did not even have a way to save the results (was doing printscreen)
 
 So I figured it should be useful despite its issues, and spent a few days getting
-basic state, export and UI. But, it still has many issues...
+basic state, export and UI working. But it still has some issues...
 
 ## Rendering issues
 
