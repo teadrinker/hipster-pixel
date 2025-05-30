@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Hipster Pixel</title>
+<meta charset="UTF-8">
+
+<style>
+/* Prevent text selection */
+* {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;   /* Safari */
+    -khtml-user-select: none;    /* Konqueror HTML */
+    -moz-user-select: none;      /* Firefox */
+    -ms-user-select: none;       /* Internet Explorer/Edge */
+    user-select: none;           /* Non-prefixed version, currently supported by Chrome, Edge, Opera */
+}
+
+/* Allow text selection in input and textarea */
+input, textarea {
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    user-select: text !important;
+}
+
+@font-face {
+    font-family: 'Idealist Hacker Mono';
+    src: url('Idealist Hacker Mono.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.button {
+    touch-action: manipulation;
+    font-family: 'Idealist Hacker Mono', monospace;
+	font-size: 17px;
+	letter-spacing: 0.04em;
+	word-spacing: -0.2em;
+    background: rgba(255, 255,	 255, 0.5);
+    color: #333;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: all 0.2s;
+    -webkit-user-select: none; /* Prevent text selection */
+    user-select: none;
+}
+
+.button:hover {
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.export-button, #newBtn, #clearBtn {
+    width: 152px;
+    text-align: center;
+}
+
+/* Shared toggle styles */
+.toggle-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.toggle-label {
+    font-family: 'Idealist Hacker Mono', monospace;
+    color: #ffffff80;
+    font-size: 18px;
+    letter-spacing: 0.04em;
+    word-spacing: -0.04em;
+    text-shadow: none;
+    line-height: 1.5;
+    padding: 4px 0;
+}
+
+.toggle-checkbox {
+    pointer-events: auto;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: rgba(255, 255, 255, 0.4);
+    border: none;
+    border-radius: 8px;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.toggle-checkbox:checked {
+    background: rgba(81, 159, 255, 0.671);
+}
+
+.toggle-checkbox:checked::after {
+    content: "✓";
+    position: absolute;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.export-button {
+    padding: 8px 16px;
+}
+
+.nav-button {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin: 0px;
+}
+
+.controls-container {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.controls-row {
+    margin-top: 0px;
+}
+
+#overlay {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: auto; /* Allow clicks on the overlay */
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+    padding: 12px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    max-width: 200px;
+}
+
+#overlay.collapsed {
+    transform: translateX(calc(-100%));
+    opacity: 0;
+    pointer-events: none;
+}
+
+#overlay-toggle {
+    font-family: 'Idealist Hacker Mono', monospace;
+    position: fixed;
+    bottom: 168px;
+    left: -25px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    box-shadow: 0px 3px 12px rgba(0, 0, 0, 0.73);
+    background-color: rgba(103, 103, 103, 0.9);
+    color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 1001;
+    pointer-events: auto;
+    transition: all 0.2s ease;
+    opacity: 0.7;
+    /* Create a larger clickable area */
+    position: relative;
+}
+
+#overlay-toggle::before {
+    content: '';
+    position: absolute;
+    /* Make the clickable arealarger */
+    width: 150%;
+    height: 150%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* Keep the visual appearance the same */
+    background: transparent;
+    z-index: -1;
+}
+
+#overlay-toggle:hover {
+    opacity: 1;
+    transform: scale(1.1);
+    background-color: rgba(150, 150, 150, 0.9);
+}
+#overlay-close {
+	font-family: 'Idealist Hacker Mono', monospace;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0);
+    color: rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    pointer-events: auto;
+    border: none;
+    line-height: 1;
+}
+
+.grid-toggle-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+}
+
+.grid-toggle-label {
+    font-family: 'Idealist Hacker Mono', monospace;
+    color: #ffffff80;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    word-spacing: -0.04em;
+    text-shadow: none;
+    line-height: 1.5;
+    padding: 4px 0;
+}
+
+.grid-toggle {
+    pointer-events: auto;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: rgba(255, 255, 255, 0.4);
+    border: none;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.grid-toggle:checked {
+    background: rgba(81, 159, 255, 0.671);
+    position: relative;
+}	
+
+.grid-toggle:checked::after {
+    content: "✓";
+    position: absolute;
+    color: rgb(255, 255, 255);
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Removed custom action button styles to use default button styling */
+</style>
+
+
+<STYLE TYPE="TEXT/CSS">
+<!--
+div, body, td, input{ margin:0 ; padding:0 ; border:0 ; font-family: Verdana, Arial, Helvetica, sans-serif ; font-size:11px ; color: #BBDDFF }
+body				{ background-color:#000; margin:0; padding:0; overflow:hidden; touch-action: manipulation; }
+
+a					{ text-decoration:none; color: #FFEECC}
+
+a:link,             
+a:visited,          
+a:active			{ color: #FFEECC}
+
+a:hover			 { color: #EEAAAA}
+
+
+-->
+</STYLE>
+
+<script src="mdi.js"></script>
+<script src="hipster-pixel.js"></script>
+<script>
+
+
+let overlayCollapsed = true;
+
+function updateOverlayCollapseState() {
+    // Handle overlay visibility based on URL hash
+    const overlay = document.getElementById('overlay');
+    const overlayToggle = document.getElementById('overlay-toggle');
+    const currentHash = window.location.hash;
+    const shouldHideBoth = currentHash === '' || currentHash === '#' || currentHash === '#new=1';
+    
+	if(shouldHideBoth)
+		overlayCollapsed = true; // collapse on new 
+
+	const hideOverlay = shouldHideBoth || overlayCollapsed;
+	const hideToggle = shouldHideBoth || !overlayCollapsed;
+
+    if (overlay) {	
+        overlay.classList.toggle('collapsed', hideOverlay);
+    }
+    if (overlayToggle) {
+        overlayToggle.style.display = hideToggle ? 'none' : 'flex';
+    }
+}
+
+htmlUIUpdate = (hashParams) => {
+    // Update toggle states
+    document.getElementById('bgToggle').checked = hashParams.bg === '1';
+    document.getElementById('gridToggle').checked = hashParams.grid === '1';
+    updateOverlayCollapseState()
+}
+
+
+function BlockMove(event) {
+  // Tell Safari not to move the window.
+  event.preventDefault() ;
+ }
+ 	
+ function init() {
+ 	document.addEventListener('touchmove', BlockMove, { passive: false });
+
+		// Initialize the app
+		geoGlue({id:'example1', size: 2 });
+		
+		// Add keyboard event listener for arrow keys and page up/down
+		document.addEventListener('keydown', function(event) {
+			// Handle arrow keys for pixel shifting
+			let dx = 0, dy = 0;
+			let handled = false;
+			
+			switch(event.key) {
+				// Arrow keys for shifting pixels
+				case 'ArrowLeft':  dx = -1; handled = true; break;
+				case 'ArrowRight': dx = 1;  handled = true; break;
+				case 'ArrowUp':    dy = -1; handled = true; break;
+				case 'ArrowDown':  dy = 1;  handled = true; break;
+				
+				// PageUp/PageDown for resizing canvas
+				case 'PageUp':
+					if (window.geoPixelApp) {
+						window.geoPixelApp.resizeCanvas(window.geoPixelApp, 1, 1);
+						handled = true;
+					}
+					break;
+					
+				case 'PageDown':
+					if (window.geoPixelApp) {
+						window.geoPixelApp.resizeCanvas(window.geoPixelApp, -1, -1);
+						handled = true;
+					}
+					break;
+			}
+			
+			// If we handled a key, prevent default behavior and request repaint
+			if (handled) {
+				event.preventDefault();
+				
+				// For arrow keys, shift the pixels
+				if (dx !== 0 || dy !== 0) {
+					window.geoPixelApp.shiftPixels(window.geoPixelApp, -dx, -dy);
+				}
+				
+				// Request a repaint
+				if (window.wantRepaint) window.wantRepaint();
+			}
+		}, false);
+	}
+
+</script>
+
+<body onLoad="init()">
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0">
+
+
+			
+		<div id="hipsterPixel" style="position:relative;background-color:#000;width:100%;height:100%;border:0;margin:0;padding:0;" >
+            Loading...
+        </div>
+		
+		<div id="overlay-toggle">-></div>
+		<div id="overlay" class="collapsed">
+    <button id="overlay-close" title="Close">◀</button>
+
+            <!-- GRID Toggle -->
+            <div class="toggle-container">
+                <input type="checkbox" id="gridToggle" class="toggle-checkbox" checked>
+                <label for="gridToggle" class="toggle-label">GRID</label>
+            </div>
+            <!-- GRADIENT Toggle -->
+            <div class="toggle-container">
+                <input type="checkbox" id="bgToggle" class="toggle-checkbox" checked>
+                <label for="bgToggle" class="toggle-label">GRADIENT</label>
+            </div>       
+
+            <!-- Export Buttons (1 per row) -->
+            <div class="controls-container">
+                <button id="exportPngBtn" class="button export-button">EXPORT PNG</button>
+            </div>
+            <div class="controls-container">
+                <button id="exportSvgBtn" class="button export-button">EXPORT SVG</button>
+            </div>
+
+
+            <!-- Navigation Buttons (4 per row) -->
+            <div class="controls-container controls-row">
+                <button onclick="window.geoPixelApp.shiftPixels(window.geoPixelApp, 1, 0); window.wantRepaint()" title="Shift Left (ArrowLeft)" class="button nav-button">◀</button>
+                <button onclick="window.geoPixelApp.shiftPixels(window.geoPixelApp, -1, 0); window.wantRepaint()" title="Shift Right (ArrowRight)" class="button nav-button">▶</button>
+                <button onclick="window.geoPixelApp.shiftPixels(window.geoPixelApp, 0, 1); window.wantRepaint()" title="Shift Up (ArrowUp)" class="button nav-button">▲</button>
+                <button onclick="window.geoPixelApp.shiftPixels(window.geoPixelApp, 0, -1); window.wantRepaint()" title="Shift Down (ArrowDown)" class="button nav-button">▼</button>
+            </div>
+
+            <div class="controls-container">
+                <button onclick="window.geoPixelApp.resizeCanvas(window.geoPixelApp, 1, 1); window.wantRepaint()" title="Expand Canvas (PageDown)" class="button export-button">EXPAND</button>
+            </div>
+
+            <!-- Resize Buttons (simplified) -->
+            <div class="controls-container">
+                <button onclick="window.geoPixelApp.resizeCanvas(window.geoPixelApp, -1, -1); window.wantRepaint()" title="Contract Canvas (PageUp)" class="button export-button">CROP</button>
+            </div>
+
+            <!-- CLEAR Button -->
+            <div class="controls-container">
+                <button id="clearBtn" class="button export-button">CLEAR</button>
+            </div>
+
+            <!-- NEW Button -->
+            <div class="controls-container">
+                <button id="newBtn" class="button export-button">NEW</button>
+            </div>
+            
+            <!-- GitHub Link -->
+            <div style="width: 100%; text-align: center; padding: 8px 0;">
+                <a href="https://github.com/teadrinker/hipster-pixel" target="_blank" rel="noopener noreferrer" style="color: #555; font-family: 'Verdana', 'Arial', 'Helvetica', 'sans-serif'; text-decoration: underline; display: inline-block; text-align: center;">GITHUB</a>
+            </div>
+            
+		</div>
+
+        <script>
+            // Add event listeners after DOM is loaded
+            document.addEventListener('DOMContentLoaded', function() {
+                // Overlay toggle functionality
+                const overlay = document.getElementById('overlay');
+                const overlayToggle = document.getElementById('overlay-toggle');
+                const overlayClose = document.getElementById('overlay-close');
+
+                function toggleOverlay() {
+                    overlayCollapsed = !overlayCollapsed;
+                    updateOverlayCollapseState();
+                }
+                
+                // Initialize toggle state
+                overlayToggle.style.display = 'flex';
+                overlayToggle.textContent = '->';
+
+
+                if (overlayToggle) overlayToggle.addEventListener('click', toggleOverlay);
+                if (overlayClose) overlayClose.addEventListener('click', toggleOverlay);
+				
+                document.getElementById('exportSvgBtn').addEventListener('click', function() {
+                    ExportSVGAndSaveInBrowser();
+                });
+
+                document.getElementById('exportPngBtn').addEventListener('click', function() {
+                    ExportPNGAndSaveInBrowser();
+                });
+
+                document.getElementById('gridToggle').addEventListener('change', function(e) {
+					const currentHash = window.location.hash.split('grid=')
+					var newVal = 'grid=' + (e.target.checked ? '1' : '0')
+					window.location.hash = currentHash[0] + newVal + (currentHash.length === 1 ? '' : currentHash[1].slice(1));
+                });
+
+				document.getElementById('bgToggle').addEventListener('change', function(e) {
+					const currentHash = window.location.hash.split('&bg=')
+					var newVal = '&bg=' + (e.target.checked ? '1' : '0')
+					window.location.hash = currentHash[0] + newVal + (currentHash.length === 1 ? '' : currentHash[1].slice(1));
+				});
+
+                // New button functionality - show menu
+                document.getElementById('newBtn').addEventListener('click', function() {
+                    window.location.hash = 'new=1';
+                });
+
+                // Clear button functionality
+                document.getElementById('clearBtn').addEventListener('click', function() {
+                    const layer = window.geoPixelApp?.state?.layers?.[0];
+                    if (layer) {
+                        const intLayer = window.geoPixelApp.layers?.[layer.internalId];
+                        const gen = intLayer?.vertexGen;
+                        if (gen) {
+                            const pixelCount = gen.w * gen.h * gen.getChunkSize(gen);
+                            layer.pixelData = new Uint8Array(pixelCount);
+                            window.geoPixelApp.invalidateLayer(layer.internalId);
+                            window.wantRepaint();
+                            setHashFromState(true);
+                        }
+                    }
+                });
+
+            });
+        </script>
+
+
+
+    <script>
+        // Initialize overlay state when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initial UI update
+            if (window.htmlUIUpdate) {
+                const hashParams = {};
+                window.location.hash.substring(1).split('&').forEach(pair => {
+                    const [key, value] = pair.split('=');
+                    if (key) hashParams[key] = value || '';
+                });
+                window.htmlUIUpdate(hashParams);
+            }
+        });
+    </script>
+</body>
+</html>
