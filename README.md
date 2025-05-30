@@ -1,8 +1,10 @@
-![Hipster Pixel Logo](hipsterPixelLogo2.png)
+# Hipster Pixel
 
 Web-app prototype for pixeling using triangular pixels, supporting multiple tilings.
 
 ![screencap gif - pixeling with triangles](hipster-pixel.gif)
+
+[**Start Pixeling!**](https://teadrinker.net/hipster)
 
 ## Beware
 
@@ -12,11 +14,9 @@ So I figured it should be useful despite its issues.
 
 ## Rendering issues
 
-Depending on browser and canvas implementation, issues can range from minor to severe.
-
-It would be complex (and computationally heavy) to treat the entire drawing as a polygon which we do union/subtraction on,
-so instead, we split the drawing into rows, drawing each separately. And the core issue is that the transitions between the rows are never seamless.
-But in many cases the grid and the background noise helps to make them less noticable.
+It would be complex (and computationally heavy) to treat the entire drawing as a polygon which we do union/subtraction on.
+Instead, we split the drawing into rows, drawing each separately. The core problem is that the transitions between the rows are never seamless.
+In many cases the grid and the background noise helps to make them less noticable, but depending on browser and canvas implementations, rendering issues can range from minor to severe.
 
 A shader/gpu based renderer would be much faster and more robust, but for svg export you would still a separate vertex based backend.
 
