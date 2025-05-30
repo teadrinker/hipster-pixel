@@ -4,7 +4,7 @@ Web-app prototype for pixeling using triangular pixels, supporting multiple tili
 
 ![screencap gif - pixeling with triangles](hipster-pixel.gif)
 
-[**Start Pixeling!**](https://teadrinker.net/hipster)
+[**Start Pixeling!**](https://teadrinker.github.io/hipster-pixel)
 
 ## Beware
 
