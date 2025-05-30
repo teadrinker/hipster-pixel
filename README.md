@@ -8,9 +8,11 @@ Web-app prototype for pixeling using triangular pixels, supporting multiple tili
 
 ## Beware
 
-I seemed to be returning to this project several times each year even though the 
-original version did not have any way to save the results except doing a printscreen.
-So I figured it should be useful despite its issues.
+I seemed to be using this project several times each year even though the 
+original prototype did not even have a way to save the results (was doing printscreen)
+
+So I figured it should be useful despite its issues, and spent a few days getting
+basic state, export and UI. But, it still has many issues...
 
 ## Rendering issues
 
@@ -37,5 +39,8 @@ Another factor is that using a fixed tiling was often much more annoying than I 
 hoped, ideally you want a more dynamic/smart tesselation, or a "selectively hierarchical"
 tiling... 
 
+## Resused Resources
 
+ * Dual svg/canvas backend from [Mad Tea Lab](https://madtealab.com)
+ * Font: [Idealist Hacker Mono](https://github.com/teadrinker/idealist-hacker-mono-font)
 
