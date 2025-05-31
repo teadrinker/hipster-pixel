@@ -6,6 +6,8 @@ Web-app prototype for pixeling using triangular pixels, supporting multiple tili
 
 [**Start Pixeling!**](https://teadrinker.github.io/hipster-pixel)
 
+[**Watch Presentation Video**](https://www.youtube.com/watch?v=C0YHuGWPhqs)
+
 ## Beware
 
 I seemed to be using this project several times each year even though the 
