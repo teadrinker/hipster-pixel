@@ -42,7 +42,7 @@ Another factor is that using a fixed tiling was often more annoying than I had
 hoped, ideally you want a more dynamic/smart tesselation, or a "selectively hierarchical"
 tiling... 
 
-## Resused Resources
+## Re-used Resources
 
  * Dual svg/canvas backend from [Mad Tea Lab](https://madtealab.com)
  * Font: [Idealist Hacker Mono](https://github.com/teadrinker/idealist-hacker-mono-font)
